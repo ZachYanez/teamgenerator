@@ -47,6 +47,17 @@ const ManagerQuestions = [
             return true;
         }
 },
+{ 
+    type: "input",
+    name: "officeNum",
+    message: "Please enter your office Number",
+    validate: async (input) => {
+        if (isNaN(input)) {
+            return ("Please enter your office number");
+        }
+            return true;
+        }
+},
 {
             type: "list",
             name: "teamConfirm",
@@ -93,7 +104,7 @@ const employeeQuestions = [
 
         type: "input",
         name: "github",
-        message: "Please enter your github username:",
+        message: "Please enter the employee's github username:",
         validate: async (input) => {
             if (input == "" || /\s/.test(input)) {
                 return "Please enter a username";
@@ -103,7 +114,7 @@ const employeeQuestions = [
     },
     {
         when: input => {
-            return input.position = "Inte rn"
+            return input.position = "Intern"
         },
     },
     {
@@ -131,7 +142,7 @@ function TeamBuild() {
         if (employeeInfo.role == "Engineer") {
             var newMember = new Engineer(employeeInfo.name, employeeInfo.length + 1, employeeInfo.email, employeeInfo.github);
         } else {
-            var newMember = new Intern(employeeInfo.name, Team.length + 1, employeeInfo.email, employeeInfo.school);
+            var newMember = new Intern(employeeInfo.name, employeeInfo.length + 1, employeeInfo.email, employeeInfo.school);
         }
         Team.push(newMember);
         if (employeeInfo.addAnother === "Yes") {
