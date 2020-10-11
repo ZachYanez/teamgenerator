@@ -38,14 +38,9 @@ const ManagerQuestions = [
 },
 { 
     type: "input",
-    name: "idNumber",
+    name: "id",
     message: "Please enter your office ID Number",
-    validate: async (input) => {
-        if (isNaN(input)) {
-            return ("Please enter your ID Number");
-        }
-            return true;
-        }
+  
 },
 { 
     type: "input",
@@ -93,13 +88,13 @@ const employeeQuestions = [
     },
     {
         type: "list",
-        name: "position",
+        name: "role",
         message: "What is the employee's position in the company?",
         choices: ["Engineer","Intern"]
     },
     {
         when: input => {
-            return input.position == "Engineer"
+            return input.position = "Engineer"
         },
 
         type: "input",
@@ -116,8 +111,7 @@ const employeeQuestions = [
         when: input => {
             return input.position = "Intern"
         },
-    },
-    {
+
         type: "input",
         name: "school",
         message: "Please enter your school",
@@ -129,7 +123,7 @@ const employeeQuestions = [
         }
     },
     {
-        type: "list",
+        type: "confirm",
         name: "addTeam",
         message: "Would you like to add another team member?",
         choices: ["Yes, No"]
@@ -140,13 +134,12 @@ const employeeQuestions = [
 function TeamBuild() {
     inquirer.prompt(employeeQuestions).then(employeeInfo => {
         if (employeeInfo.role == "Engineer") {
-            var newMember = new Engineer(employeeInfo.name, employeeInfo.length + 1, employeeInfo.email, employeeInfo.github);
+            var newMember = new Engineer(employeeInfo.name, employeeInfo.length, employeeInfo.email, employeeInfo.github);
         } else {
-            var newMember = new Intern(employeeInfo.name, employeeInfo.length + 1, employeeInfo.email, employeeInfo.school);
+            var newMember = new Intern(employeeInfo.name, employeeInfo.length, employeeInfo.email, employeeInfo.school);
         }
         Team.push(newMember);
         if (employeeInfo.addAnother === "Yes") {
-        ;
           TeamBuild();
         } else {
             htmlBuild();
@@ -156,19 +149,23 @@ function TeamBuild() {
 
 function CardBuild(memberType, name, id, email, propertyValue) {
     let data = fs.readFileSync(`./templates/${memberType}.html`, 'utf8')
-    data = data.replace("nameHere", name);
-    data = data.replace("idHere", `ID: ${id}`);
-    data = data.replace("emailHere", `Email: <a href="mailto:${email}">${email}</a>`);
-    data = data.replace("propertyHere", propertyValue);
+    data = data.replace("name", name);
+    data = data.replace("id", `ID: ${id}`);
+    data = data.replace("email", `Email: <a href="mailto:${email}</a>`);
+    data = data.replace("property", propertyValue);
     fs.appendFileSync("success.html", data, err => { if (err) throw err; });
 }
 
 
 function htmlBuild() {
     let newFile = fs.readFileSync("./templates/main.html")
-    fs.writeFileSync("success.html", newFile, function (err) {
-        if (err) throw err;
-    })
+    if (!fs.existsSync(OUTPUT_DIR)){
+        fs.mkdirSync(OUTPUT_DIR)
+    }
+    fs.writeFileSync(outputPath, render(Team),"UTF-8")
+
+
+    console.log(Team)
 
     for (member of Team) {
         if (member.getRole() == "Manager") {
@@ -194,6 +191,7 @@ function init() {
             TeamBuild();
         } else {
             htmlBuild();
+            
         }
     })
 }
