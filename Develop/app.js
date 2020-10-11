@@ -40,7 +40,12 @@ const ManagerQuestions = [
     type: "input",
     name: "id",
     message: "Please enter your office ID Number",
-  
+    validate: async (input) => {
+        if (isNaN(input)) {
+            return ("Please enter your ID number");
+        }
+            return true;
+        }
 },
 { 
     type: "input",
@@ -139,7 +144,7 @@ function TeamBuild() {
             var newMember = new Intern(employeeInfo.name, employeeInfo.length, employeeInfo.email, employeeInfo.school);
         }
         Team.push(newMember);
-        if (employeeInfo.addAnother === "Yes") {
+        if (employeeInfo.addTeam === "Yes") {
           TeamBuild();
         } else {
             htmlBuild();
