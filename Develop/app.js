@@ -91,6 +91,17 @@ const employeeQuestions = [
               return ("You have entered an invalid email address!");
         }
     },
+    { 
+        type: "input",
+        name: "id",
+        message: "Please enter your office ID Number",
+        validate: async (input) => {
+            if (isNaN(input)) {
+                return ("Please enter your ID number");
+            }
+                return true;
+            }
+    },
     {
         type: "list",
         name: "role",
